@@ -67,7 +67,7 @@ export default function PaketUmroh() {
           <div className="flex justify-start">
             <div className="transition-all duration-300 w-full max-w-sm relative">
               <Image
-                src="/images/paket-Umroh.png"
+                src="/images/paket-UMROH.png"
                 alt="Paket Umroh"
                 width={384}
                 height={826}

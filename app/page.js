@@ -169,7 +169,7 @@ export default function MzmTourApp() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 items-center">
           <div className="relative rounded-2xl overflow-hidden h-72 sm:h-80 md:h-96 shadow-lg">
-            <Image src="/images/tentang mzm.png" alt="Tentang MZM" fill className="object-cover" />
+            <Image src="/images/tentang-mzm.png" alt="Tentang MZM" fill className="object-cover" />
           </div>
           <div>
             <p className="text-gray-600 text-sm leading-relaxed mb-6">

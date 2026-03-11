@@ -10,7 +10,7 @@ const Footer = () => {
           {/* logo dan deskripsi */}
           <div>
             <Link href="/">
-              <Image src="/logo.png" width={82} height={56} alt="logo" priority/>
+              <Image src="/icon/logo.png" width={82} height={56} alt="logo" priority/>
             </Link>
             <p className="text-[#CBD5E1] py-6 text-sm leading-relaxed">
               MZM Travel adalah penyelenggara resmi perjalanan ibadah Umroh dan
