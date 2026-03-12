@@ -14,7 +14,7 @@ const Footer = () => {
             </Link>
             <p className="text-[#CBD5E1] py-6 text-sm leading-relaxed">
               MZM Travel adalah penyelenggara resmi perjalanan ibadah Umroh dan
-              Haji yang mengutamakan pelayanan sesuai sunnah dan kenyamanan jamaah sejak 2025.
+              Haji yang mengutamakan pelayanan sesuai sunnah dan kenyamanan jamaah sejak 2023.
             </p>
             <div className="flex gap-4">
               <Link href="https://wa.me/6282311000853" target="Perjalanan Ibadah Suci Anda yang Bermakna" rel="noopener noreferrer">
@@ -76,8 +76,9 @@ const Footer = () => {
                <li className="flex items-start gap-3">
                   <Image src="/icon/jam.png" width={22} height={22} alt="jam" className="mt-0.5 shrink-0" />
                   <div className="flex flex-col gap-1 hover:text-white transition-colors duration-200 leading-relaxed">
-                    <span>Senin – Jumat: 10.00 – 17.00 WIB</span>
-                    <span>Sabtu – Minggu: Libur</span>
+                    <span>Senin – Jumat: 08.00 – 20.00 WIB</span>
+                    <span>Sabtu: 08.00 - 17.00 WIB</span>
+                    <span>Minggu & Hari Libur: Tutup</span>
                   </div>
                 </li>
             </ul>
