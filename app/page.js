@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -22,15 +22,33 @@ const tentangFeatures = [
   { icons: "/icon/fasilitas.png",  label: "Fasilitas Premium" },
 ];
 
-const reviewsData = [
-  { name: "H. Ahmad Fauzi",   avatar: "/icon/profile.png", location: "Jakarta Selatan", text: "Alhamdulillah, perjalanan umroh bersama MZM Travel sangat berkesan. Pembimbingnya sangat sabar dan lokasi hotel sangat dekat dengan masjid." },
-  { name: "Hj. Siti Aminah",  avatar: "/icon/profile.png",  location: "Jakarta Timur",   text: "Fasilitas VIP benar-benar terasa. Haji dengan MZM Travel adalah keberkahan tersendiri, terimakasih MZM Travel atas bantuannya." },
-  { name: "Bp. Budi Santoso", avatar: "/icon/profile.png",  location: "Bekasi",          text: "Paket Wisata Islami ke Turki sangat menyenangkan. Makanan selalu terjamin serta jadwal shalat tetap terjaga dengan baik." },
-];
+const emptyForm = { nama: "", lokasi: "", rating: 5, pesan: "" };
 
 export default function MzmTourApp() {
   const reviewRef = useRef(null);
 
+  // testimoni state
+  const [reviews, setReviews] = useState([]);
+  const [form, setForm] = useState(emptyForm);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(""); // "success" | "error"
+
+  // fetch testimoni yang tampil = true
+  useEffect(() => {
+    fetchTestimoni();
+  }, []);
+
+  async function fetchTestimoni() {
+    try {
+      const res = await fetch("/api/testimoni");
+      const json = await res.json();
+      if (json.success && json.data) setReviews(json.data);
+    } catch {
+      console.error("Gagal fetch testimoni");
+    }
+  }
+
+  // auto scroll review
   useEffect(() => {
     const interval = setInterval(() => {
       if (reviewRef.current) {
@@ -45,20 +63,55 @@ export default function MzmTourApp() {
     return () => clearInterval(interval);
   }, []);
 
+  // submit review
+  const handleSubmit = async () => {
+    if (!form.nama.trim() || !form.pesan.trim()) {
+      setSubmitStatus("error-empty");
+      return;
+    }
+    setSubmitting(true);
+    setSubmitStatus("");
+    try {
+      const res = await fetch("/api/testimoni", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nama: form.nama.trim(),
+          lokasi: form.lokasi.trim(),
+          rating: form.rating,
+          pesan: form.pesan.trim(),
+        }),
+      });
+      const json = await res.json();
+      setSubmitting(false);
+      if (json.success) {
+        setSubmitStatus("success");
+        setForm(emptyForm);
+        fetchTestimoni();
+      } else {
+        setSubmitStatus("error");
+      }
+    } catch {
+      setSubmitting(false);
+      setSubmitStatus("error");
+    }
+  };
+
+  // tampilkan reviews dari DB, fallback ke static jika kosong
+  const displayReviews = reviews.length > 0 ? reviews : [
+    { nama: "H. Ahmad Fauzi",   lokasi: "Jakarta Selatan", rating: 5, pesan: "Alhamdulillah, perjalanan umroh bersama MZM Travel sangat berkesan. Pembimbingnya sangat sabar dan lokasi hotel sangat dekat dengan masjid." },
+    { nama: "Hj. Siti Aminah",  lokasi: "Jakarta Timur",   rating: 5, pesan: "Fasilitas VIP benar-benar terasa. Haji dengan MZM Travel adalah keberkahan tersendiri, terimakasih MZM Travel atas bantuannya." },
+    { nama: "Bp. Budi Santoso", lokasi: "Bekasi",          rating: 5, pesan: "Paket Wisata Islami ke Turki sangat menyenangkan. Makanan selalu terjamin serta jadwal shalat tetap terjaga dengan baik." },
+  ];
+
   return (
     <main className="bg-[#edf7f7]">
 
       {/*HERO*/}
       <section id="beranda" className="relative w-full min-h-screen overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/gambar1.png"
-            alt="Hero Section 1"
-            width={1440}
-            height={797}
-            className="w-full h-full object-cover"
-            priority
-          />
+          <Image src="/images/gambar1.png" alt="Hero Section 1" width={1440} height={797}
+            className="w-full h-full object-cover" priority />
           <div className="absolute inset-0 bg-black/30" />
         </div>
         <div className="relative z-20 max-w-screen-xl mx-auto px-6 sm:px-12 md:px-20 py-24 w-full pt-20 pb-32">
@@ -71,17 +124,15 @@ export default function MzmTourApp() {
             Anda yang Bermakna
           </h1>
           <p className="text-gray-300 text-sm sm:text-base md:text-lg max-w-xl mb-10 leading-relaxed">
-            Nikmati kenyamanan beribadah dengan pelayanan profesional,
-            pembimbing sesuai sunnah, dan fasilitas terbaik. Kami siap melayani
-            langkah suci Anda menuju baitullah.
+            Nikmati kenyamanan beribadah dengan pelayanan profesional, pembimbing sesuai sunnah, dan fasilitas terbaik.
+            Kami siap melayani langkah suci Anda menuju baitullah.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link href="/#layanan"
               className="inline-flex items-center justify-center gap-2 bg-[#008080] hover:bg-[#006666] text-white font-semibold px-6 py-3 rounded-md transition-colors duration-200 text-sm sm:text-base">
               Layanan Kami →
             </Link>
-            <Link
-              href={`https://wa.me/6282311000853?text=${encodeURIComponent("Halo, saya ingin tanya tentang layanan MZM Tour")}`}
+            <Link href={`https://wa.me/6282311000853?text=${encodeURIComponent("Halo, saya ingin tanya tentang layanan MZM Tour")}`}
               target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 border border-[#008080] text-[#008080] bg-white font-semibold px-6 py-3 rounded-md text-sm sm:text-base">
               <Image src="/icon/wa2.png" width={20} height={20} alt="wa" />
@@ -116,8 +167,7 @@ export default function MzmTourApp() {
           </h3>
           <div className="w-16 h-1 bg-[#008080] mx-auto rounded-full mb-5" />
           <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed px-2">
-            Kami memahami kebutuhan beribadah spiritual Anda. Pilih paket yang dirancang khusus
-            untuk kenyamanan dan kekhusyukan Ibadah Anda.
+            Kami memahami kebutuhan beribadah spiritual Anda. Pilih paket yang dirancang khusus untuk kenyamanan dan kekhusyukan Ibadah Anda.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -137,7 +187,7 @@ export default function MzmTourApp() {
         </div>
       </section>
 
-      {/*TENTANG */}
+      {/* TENTANG */}
       <section id="tentang-mzm" className="max-w-screen-xl mx-auto px-6 pt-4 pb-16 sm:pb-20">
         <div className="text-center mb-10">
           <span className="inline-block bg-[#008080]/10 text-[#008080] text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">
@@ -156,9 +206,7 @@ export default function MzmTourApp() {
             <p className="text-gray-600 text-sm leading-relaxed mb-6">
               Bermula dari sebuah niat suci untuk memfasilitasi perjalanan spiritual umat Muslim ke Tanah Suci, MZM TOUR tumbuh menjadi sahabat perjalanan terpercaya
               bagi ratusan jamaah. Selama lebih dari 3 tahun, MZM TOUR tidak hanya sekadar menyediakan paket perjalanan,
-              namun juga menghadirkan pengalaman ibadah yang khusyuk dan berkesan. Dengan berpegang teguh pada nilai-nilai
-              profesionalisme dan dedikasi, setiap detail perjalanan dirancang dengan cermat, mulai dari akomodasi yang nyaman,
-              transportasi yang aman, hingga bimbingan ibadah yang berkualitas.
+              namun juga menghadirkan pengalaman ibadah yang khusyuk dan berkesan.
             </p>
             <div className="flex gap-12 sm:gap-16 mb-6 items-end">
               {tentangFeatures.map((f) => (
@@ -179,21 +227,17 @@ export default function MzmTourApp() {
         </div>
       </section>
 
-      {/*CEK JADWAL */}
+      {/* CEK JADWAL */}
       <section id="cek-jadwal" className="relative py-16 sm:py-20 overflow-hidden" style={{ background: "#008080" }}>
-      
         <div className="relative max-w-screen-xl mx-auto px-8 sm:px-16 md:px-20">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 md:gap-16">
             <div className="relative max-w-screen-xl mx-auto px-6 sm:px-10 md:px-20 lg:px-32">
-              <p className="text-white/70 text-[11px] font-bold uppercase tracking-widest mb-3">
-                Jadwal Keberangkatan
-              </p>
+              <p className="text-white/70 text-[11px] font-bold uppercase tracking-widest mb-3">Jadwal Keberangkatan</p>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight mb-4">
                 Cek Jadwal <br />Keberangkatan Terbaru
               </h2>
               <p className="text-white/75 text-sm sm:text-base leading-relaxed mb-6 max-w-md">
-                Jangan lewatkan kesempatan untuk berangkat di musim umroh terbaik.
-                Lihat jadwal tersedia dan amankan kursi Anda segera melalui WhatsApp.
+                Jangan lewatkan kesempatan untuk berangkat di musim umroh terbaik. Lihat jadwal tersedia dan amankan kursi Anda segera.
               </p>
               <div className="flex flex-wrap gap-4 text-sm">
                 <span className="flex items-center gap-2 text-white font-medium">
@@ -213,7 +257,6 @@ export default function MzmTourApp() {
                 Lihat Jadwal Keberangkatan
               </Link>
             </div>
-
           </div>
         </div>
       </section>
@@ -238,25 +281,30 @@ export default function MzmTourApp() {
             </div>
           </div>
 
+          {/* Scroll review cards */}
           <div ref={reviewRef} className="flex gap-5 overflow-x-auto py-6"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-            {[...reviewsData, ...reviewsData, ...reviewsData].map((r, index) => (
+            {[...displayReviews, ...displayReviews, ...displayReviews].map((r, index) => (
               <div key={index}
                 className="flex-shrink-0 w-[280px] sm:w-[300px] bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex gap-0.5">
-                    {[...Array(5)].map((_, i) => <span key={i} className="text-[#F59E0B] text-sm">★</span>)}
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} className={i < (r.rating || 5) ? "text-[#F59E0B] text-sm" : "text-gray-200 text-sm"}>★</span>
+                    ))}
                   </div>
-                  <span className="text-gray-400 text-xs">Mar 2026</span>
+                  <span className="text-gray-400 text-xs">
+                    {r.created_at ? new Date(r.created_at).toLocaleDateString("id-ID", { month: "short", year: "numeric" }) : "Mar 2026"}
+                  </span>
                 </div>
-                <p className="text-gray-700 text-sm leading-relaxed flex-1 mb-5">&ldquo;{r.text}&rdquo;</p>
+                <p className="text-gray-700 text-sm leading-relaxed flex-1 mb-5">&ldquo;{r.pesan || r.text}&rdquo;</p>
                 <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                  <div className="w-9 h-9 rounded-full bg-[#008080]/10 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    <Image src={r.avatar} alt={r.name} width={36} height={36} className="rounded-full object-cover" />
+                  <div className="w-9 h-9 rounded-full bg-[#008080]/10 flex items-center justify-center flex-shrink-0 text-sm font-bold text-[#008080]">
+                    {(r.nama || r.name)?.charAt(0)}
                   </div>
                   <div>
-                    <p className="font-bold text-gray-900 text-sm">{r.name}</p>
-                    <p className="text-gray-400 text-xs">{r.location}</p>
+                    <p className="font-bold text-gray-900 text-sm">{r.nama || r.name}</p>
+                    <p className="text-gray-400 text-xs">{r.lokasi || r.location}</p>
                   </div>
                 </div>
               </div>
@@ -264,37 +312,59 @@ export default function MzmTourApp() {
           </div>
 
           {/* Form Review */}
-          <div id="form-review" className="max-w-lg mx-auto">
+          <div id="form-review" className="max-w-lg mx-auto mt-6">
             <h3 className="text-xl sm:text-2xl font-bold text-center text-[#008080] mb-8">Tulis Review Anda</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                <input type="text" placeholder="Masukkan nama Anda..."
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap <span className="text-red-500">*</span></label>
+                <input type="text" value={form.nama} onChange={e => setForm({...form, nama: e.target.value})}
+                  placeholder="Masukkan nama Anda..."
                   className="w-full border border-gray-300 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#008080]" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Kota Asal</label>
-                <input type="text" placeholder="Contoh: Jakarta Selatan..."
+                <input type="text" value={form.lokasi} onChange={e => setForm({...form, lokasi: e.target.value})}
+                  placeholder="Contoh: Jakarta Selatan..."
                   className="w-full border border-gray-300 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#008080]" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
-                <select className="w-full border border-gray-300 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#008080]">
-                  <option>★★★★★ (Sangat Puas)</option>
-                  <option>★★★★ (Puas)</option>
-                  <option>★★★ (Cukup)</option>
-                  <option>★★ (Kurang)</option>
-                  <option>★ (Tidak Puas)</option>
-                </select>
+                <div className="flex gap-2">
+                  {[1,2,3,4,5].map(n => (
+                    <button key={n} onClick={() => setForm({...form, rating: n})}
+                      className={`text-2xl transition-transform hover:scale-110 ${n <= form.rating ? "text-amber-400" : "text-gray-300"}`}>★</button>
+                  ))}
+                </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Pesan Review</label>
-                <textarea rows={4} placeholder="Bagikan pengalaman Anda..."
+                <label className="block text-sm font-medium text-gray-700 mb-1">Pesan Review <span className="text-red-500">*</span></label>
+                <textarea rows={4} value={form.pesan} onChange={e => setForm({...form, pesan: e.target.value})}
+                  placeholder="Bagikan pengalaman Anda..."
                   className="w-full border border-gray-300 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#008080] resize-none" />
               </div>
-              <button className="w-full bg-[#008080] hover:bg-[#006666] text-white font-semibold py-3 rounded-md transition-colors duration-200 text-sm sm:text-base inline-flex items-center justify-center gap-2">
-                Kirim Review
-                <Image src="/icon/send.png" alt="Send Icon" width={19} height={16} />
+
+              {/* Status messages */}
+              {submitStatus === "success" && (
+                <div className="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-lg flex items-center gap-2">
+                  ✓ Terima kasih! Review Anda berhasil dikirim dan sudah tampil.
+                </div>
+              )}
+              {submitStatus === "error-empty" && (
+                <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-lg">
+                  Nama dan pesan review wajib diisi.
+                </div>
+              )}
+              {submitStatus === "error" && (
+                <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-lg">
+                  Terjadi kesalahan. Silakan coba lagi.
+                </div>
+              )}
+
+              <button onClick={handleSubmit} disabled={submitting}
+                className="w-full bg-[#008080] hover:bg-[#006666] disabled:opacity-60 text-white font-semibold py-3 rounded-md transition-colors duration-200 text-sm sm:text-base inline-flex items-center justify-center gap-2">
+                {submitting ? "Mengirim..." : (
+                  <>Kirim Review <Image src="/icon/send.png" alt="Send" width={19} height={16} /></>
+                )}
               </button>
             </div>
           </div>

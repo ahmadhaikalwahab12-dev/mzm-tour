@@ -121,7 +121,7 @@ export default function PaketHaji() {
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="flex items-center gap-2 text-gray-500">
-                        <Image src="/icon/vector.png" alt="" width={16} height={16} className="object-contain opacity-70" />
+                        <Image src="/icon/Vector.png" alt="" width={16} height={16} className="object-contain opacity-70" />
                         Maskapai
                       </span>
                       <span className="font-semibold text-gray-800">{paket.maskapai}</span>
