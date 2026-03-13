@@ -27,6 +27,7 @@ export default function PaketWisata() {
           </p>
         </div>
       </section>
+
       <div className="max-w-2xl mx-auto px-6 -mt-6 relative z-10 mb-10">
         <div className="bg-white rounded-2xl shadow-xl px-5 py-4 flex items-center gap-3 border border-gray-100">
           <input
@@ -41,13 +42,22 @@ export default function PaketWisata() {
           )}
         </div>
       </div>
+
       <div className="max-w-screen-xl mx-auto px-6 pb-20">
         <div className="text-center py-16">
-          <p className="text-gray-400 sm:text-lg">Destinasi tidak ditemukan</p>
+          <p className="text-gray-400 sm:text-lg">
+            {search ? `Paket "${search}" tidak ditemukan` : "Paket wisata segera hadir"}
+          </p>
+          {search && (
+            <button onClick={() => setSearch("")} className="mt-3 text-blue-600 text-xs font-semibold hover:underline">
+              Reset pencarian
+            </button>
+          )}
         </div>
+
         <div className="text-center mt-4">
           <Link href="/" className="inline-flex items-center py-2 px-5 gap-3 text-[#5A74B3] text-base sm:text-lg font-semibold hover:gap-3 transition-all duration-200">
-           <span className="text-4xl  mt-[-3px] leading-[1]">‹</span>
+           <span className="text-4xl mt-[-3px] leading-[1]">‹</span>
            <span>Kembali ke Beranda</span>
           </Link>
         </div>

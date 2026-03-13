@@ -200,9 +200,6 @@
 
                 {/*Komitmen*/} 
                 <section className="relative py-16 px-6 sm:px-10 overflow-hidden bg-gradient-to-br from-[#0F9F9F] via-[#008080] to-[#006666]">
-                    <div className="absolute top-[-60px] right-[-60px] w-72 h-72 rounded-full bg-white/5 pointer-events-none" />
-                    <div className="absolute bottom-[-80px] left-[-40px] w-80 h-80 rounded-full bg-white/5 pointer-events-none" />
-
                     <div className="relative max-w-screen-xl mx-auto">
                         <h2 className="text-2xl sm:text-3xl font-bold text-white text-center uppercase tracking-widest mb-10">
                         Komitmen MZM Tour
