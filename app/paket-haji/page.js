@@ -1,25 +1,48 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-const paketList = [
+const FALLBACK_HAJI = [
   {
-    id: 1,
-    img: "/images/paketHaji2.png",
+    id: "static-1",
+    gambar: "/images/paketHaji2.png",
     nama: "Haji Percepatan 1448H",
-    kategori: "Haji Khusus",
+    kategori: "Khusus",
     durasi: "24 Hari",
     maskapai: "Garuda Indonesia",
     hotel: "Bintang 4",
     harga: "425.000.000",
     berangkat: "Awal Dzulhijjah",
+    keberangkatan: "JAKARTA (CGK)",
+    status: "Tersedia",
   },
 ];
 
 export default function PaketHaji() {
   const [search, setSearch] = useState("");
   const [lightbox, setLightbox] = useState(null);
+  const [paketList, setPaketList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPaket();
+  }, []);
+
+  async function fetchPaket() {
+    try {
+      const res = await fetch("/api/paket?jenis=Haji");
+      const json = await res.json();
+      const dbData = (json.success && json.data) ? json.data : [];
+      const dbIds = dbData.map(p => p.nama);
+      const filtered = FALLBACK_HAJI.filter(f => !dbIds.includes(f.nama));
+      setPaketList([...filtered, ...dbData]);
+    } catch {
+      setPaketList(FALLBACK_HAJI);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const filtered = paketList.filter((p) =>
     search === "" || p.nama.toLowerCase().includes(search.toLowerCase())
@@ -65,98 +88,38 @@ export default function PaketHaji() {
 
       {/* Konten */}
       <div className="max-w-screen-xl mx-auto px-6 pb-20">
-        {filtered.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-gray-400 text-sm">Paket tidak ditemukan</p>
-            <button onClick={() => setSearch("")} className="mt-3 text-[#c97d20] text-xs font-semibold hover:underline">
-              Reset pencarian
-            </button>
+
+        {/* Loading */}
+        {loading && (
+          <div className="flex justify-center py-20">
+            <div className="w-8 h-8 border-4 border-amber-200 border-t-amber-600 rounded-full animate-spin" />
           </div>
-        ) : (
+        )}
+
+        {/* Kosong */}
+        {!loading && filtered.length === 0 && (
+          <div className="text-center py-16">
+            <p className="text-gray-400 text-sm">
+              {search ? "Paket tidak ditemukan" : "Paket segera hadir"}
+            </p>
+            {search && (
+              <button onClick={() => setSearch("")} className="mt-3 text-[#c97d20] text-xs font-semibold hover:underline">
+                Reset pencarian
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Daftar paket */}
+        {!loading && filtered.length > 0 && (
           <div className="flex flex-wrap gap-6 justify-start">
             {filtered.map((paket) => (
-              <div key={paket.id} className="w-full max-w-sm bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200">
-
-                {/* Gambar */}
-                <div className="relative cursor-zoom-in group" onClick={() => setLightbox(paket.img)}>
-                  <Image
-                    src={paket.img}
-                    alt={paket.nama}
-                    width={1080}
-                    height={1350}
-                    className="w-full h-auto"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-200 flex items-center justify-center">
-                    <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 scale-75 group-hover:scale-100 bg-white/20 backdrop-blur-sm border-2 border-white/60 text-white text-3xl font-thin w-16 h-16 rounded-full flex items-center justify-center shadow-xl">
-                      +
-                    </span>
-                  </div>
-                </div>
-
-                {/* Info */}
-                <div className="p-5">
-                  <h3 className="font-extrabold text-gray-900 text-base mb-4 uppercase tracking-wide">{paket.nama}</h3>
-
-                  <div className="space-y-3 mb-4">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2 text-gray-500">
-                        <Image src="/icon/Calendar.png" alt="" width={16} height={16} className="object-contain opacity-70" />
-                        Jadwal Berangkat
-                      </span>
-                      <span className="font-semibold text-gray-800">{paket.berangkat}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2 text-gray-500">
-                        <Image src="/icon/jam1.png" alt="" width={16} height={16} className="object-contain opacity-70" />
-                        Durasi Perjalanan
-                      </span>
-                      <span className="font-semibold text-gray-800">{paket.durasi}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2 text-gray-500">
-                        <Image src="/icon/location_on.png" alt="" width={16} height={16} className="object-contain opacity-70" />
-                        Keberangkatan
-                      </span>
-                      <span className="font-semibold text-gray-800">JAKARTA (CGK)</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2 text-gray-500">
-                        <Image src="/icon/Vector.png" alt="" width={16} height={16} className="object-contain opacity-70" />
-                        Maskapai
-                      </span>
-                      <span className="font-semibold text-gray-800">{paket.maskapai}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2 text-gray-500">
-                        <Image src="/icon/hotel1.png" alt="" width={16} height={16} className="object-contain opacity-70" />
-                        Hotel
-                      </span>
-                      <span className="flex items-center gap-0.5">
-                        {[...Array(4)].map((_, i) => <span key={i} className="text-amber-400 text-sm">★</span>)}
-                        <span className="text-gray-300 text-sm">★</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="border-t border-dashed border-gray-200 pt-4 mb-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-500 text-sm font-medium">Harga Paket</span>
-                      <span className="text-amber-500 font-extrabold text-xl">{paket.harga}</span>
-                    </div>
-                  </div>
-
-                  <Link
-                    href={`https://wa.me/6282311000853?text=${encodeURIComponent(`Halo, saya ingin tanya tentang ${paket.nama}`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 bg-[#008080] hover:bg-[#006666] text-white text-sm font-bold py-3.5 rounded-2xl transition-colors duration-200 shadow-sm"
-                  >
-                    <Image src="/icon/wa.png" alt="WhatsApp" width={20} height={20} className="object-contain" />
-                    Hubungi via WhatsApp
-                  </Link>
-                </div>
-
-              </div>
+              <PaketCard
+                key={paket.id}
+                paket={paket}
+                onLightbox={setLightbox}
+                fallbackImg="/images/paketHaji2.png"
+              />
             ))}
           </div>
         )}
@@ -193,7 +156,101 @@ export default function PaketHaji() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
 
+function PaketCard({ paket, onLightbox, fallbackImg = "/images/paket-Haji1.png" }) {
+  const bintang = paket.hotel?.includes("5") ? 5 : paket.hotel?.includes("3") ? 3 : 4;
+  const imgSrc = paket.gambar || fallbackImg;
+
+  return (
+    <div className="w-full max-w-sm bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200">
+
+      {/* Gambar */}
+      <div className="relative cursor-zoom-in group" onClick={() => onLightbox(imgSrc)}>
+        <Image
+          src={imgSrc}
+          alt={paket.nama}
+          width={1080}
+          height={1350}
+          className="w-full h-auto"
+          onError={(e) => { e.currentTarget.src = fallbackImg; }}
+        />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-200 flex items-center justify-center">
+          <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 scale-75 group-hover:scale-100 bg-white/20 backdrop-blur-sm border-2 border-white/60 text-white text-3xl font-thin w-16 h-16 rounded-full flex items-center justify-center shadow-xl">
+            +
+          </span>
+        </div>
+        {paket.status && paket.status !== "Tersedia" && (
+          <div className="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
+            {paket.status}
+          </div>
+        )}
+      </div>
+
+      {/* Info */}
+      <div className="p-5">
+        <h3 className="font-extrabold text-gray-900 text-base mb-4 uppercase tracking-wide">{paket.nama}</h3>
+
+        <div className="space-y-3 mb-4">
+          <div className="flex items-center justify-between text-sm">
+            <span className="flex items-center gap-2 text-gray-500">
+              <Image src="/icon/Calendar.png" alt="" width={16} height={16} className="object-contain opacity-70" />
+              Jadwal Berangkat
+            </span>
+            <span className="font-semibold text-gray-800">{paket.berangkat || "-"}</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="flex items-center gap-2 text-gray-500">
+              <Image src="/icon/jam1.png" alt="" width={16} height={16} className="object-contain opacity-70" />
+              Durasi Perjalanan
+            </span>
+            <span className="font-semibold text-gray-800">{paket.durasi || "-"}</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="flex items-center gap-2 text-gray-500">
+              <Image src="/icon/location_on.png" alt="" width={16} height={16} className="object-contain opacity-70" />
+              Keberangkatan
+            </span>
+            <span className="font-semibold text-gray-800">{paket.keberangkatan || "JAKARTA (CGK)"}</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="flex items-center gap-2 text-gray-500">
+              <Image src="/icon/Vector.png" alt="" width={16} height={16} className="object-contain opacity-70" />
+              Maskapai
+            </span>
+            <span className="font-semibold text-gray-800">{paket.maskapai || "-"}</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="flex items-center gap-2 text-gray-500">
+              <Image src="/icon/hotel1.png" alt="" width={16} height={16} className="object-contain opacity-70" />
+              Hotel
+            </span>
+            <span className="flex items-center gap-0.5">
+              {[...Array(bintang)].map((_, i) => <span key={i} className="text-amber-400 text-sm">★</span>)}
+              {[...Array(5 - bintang)].map((_, i) => <span key={i} className="text-gray-300 text-sm">★</span>)}
+            </span>
+          </div>
+        </div>
+
+        <div className="border-t border-dashed border-gray-200 pt-4 mb-4">
+          <div className="flex items-center justify-between">
+            <span className="text-gray-500 text-sm font-medium">Harga Paket</span>
+            <span className="text-amber-500 font-extrabold text-xl">{paket.harga || "-"}</span>
+          </div>
+        </div>
+
+        <Link
+          href={`https://wa.me/6282311000853?text=${encodeURIComponent(`Halo, saya ingin tanya tentang ${paket.nama}`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-2 bg-[#008080] hover:bg-[#006666] text-white text-sm font-bold py-3.5 rounded-2xl transition-colors duration-200 shadow-sm"
+        >
+          <Image src="/icon/wa.png" alt="WhatsApp" width={20} height={20} className="object-contain" />
+          Hubungi via WhatsApp
+        </Link>
+      </div>
     </div>
   );
 }
