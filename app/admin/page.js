@@ -18,7 +18,7 @@ const emptyPaket = { nama:"", jenis:"Umroh", kategori:"Reguler", durasi:"", mask
 const emptyJadwal = { nama_paket:"", jenis:"Umroh", tanggal_berangkat:"", tanggal_pulang:"", maskapai:"", hotel:"", kuota:"", terisi:"0", status:"Aktif", catatan:"", is_riwayat:false, tanggal_selesai:"" };
 const emptyTestimoni = { nama:"", lokasi:"", rating:5, pesan:"", tampil:true };
 
-// Navbar Layanan (sama seperti halaman layanan)
+//  Navbar Layanan
 function NavbarAdmin({ onLogout }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -99,7 +99,7 @@ function NavbarAdmin({ onLogout }) {
   );
 }
 
-//  Icon components 
+// Icon components 
 const IconEdit = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -282,10 +282,10 @@ export default function AdminPage() {
 
   const filteredPaket = filterPaket === "Semua" ? paketList : paketList.filter(p => p.jenis === filterPaket);
 
-  //  LOGIN PAGE 
+  // LOGIN PAGE 
   if (!loggedIn) return (
-    <div className="fixed inset-0 bg-white z-[200] flex items-center justify-center p-4 overflow-y-auto">
-      <div className="w-full max-w-sm">
+    <div className="fixed inset-0 bg-gray-100 z-[200] flex items-center justify-center p-4 overflow-y-auto">
+      <div className="w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-gray-100 px-8 py-10">
         <div className="text-center mb-8">
           <Image src="/icon/logo.png" width={90} height={62} alt="logo" className="mx-auto mb-5" />
           <h1 className="text-xl font-extrabold text-gray-900">Selamat Datang</h1>
@@ -318,15 +318,16 @@ export default function AdminPage() {
     </div>
   );
 
-  // DASHBOARD 
+  //  DASHBOARD 
   const menuItems = [
-    { key:"paket",     icon: <Image src="/icon/pembimbing.png" alt="" width={16} height={16} className="object-contain brightness-0 invert" />, label:"Paket Perjalanan" },
+    { key:"paket",     icon: <Image src="/icon/Vector.png" alt="" width={16} height={16} className="object-contain brightness-0 invert" />, label:"Paket Perjalanan" },
     { key:"jadwal",    icon: <Image src="/icon/calender1.png" alt="" width={16} height={16} className="object-contain brightness-0 invert" />,  label:"Jadwal Keberangkatan" },
-    { key:"testimoni", icon: "⭐", label:"Testimoni" },
+    { key:"testimoni", icon: <Image src="/icon/testimoni.png" alt="" width={16} height={16} className="object-contain brightness-0 invert" />, label:"Testimoni" },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col pb-0">
+      <style>{`footer { display: none !important; }`}</style>
 
       {/* Navbar layanan */}
       <NavbarAdmin onLogout={() => setLoggedIn(false)} />
@@ -334,37 +335,37 @@ export default function AdminPage() {
       {/* Toast */}
       {toast && (
         <div className="fixed top-24 right-6 z-[100] bg-[#008080] text-white text-sm font-semibold px-5 py-3 rounded-2xl shadow-lg flex items-center gap-2">
-          <span className="text-base">✓</span> {toast}
+          <Image src="/icon/ceklis.png" alt="" width={16} height={16} className="object-contain brightness-0 invert" /> {toast}
         </div>
       )}
 
-      {/* Sub-header admin */}
-      <div className="bg-gradient-to-r from-[#042f2f] to-[#008080] text-white px-6 pt-24 pb-5">
+      <div className="bg-gradient-to-r from-[#042f2f] to-[#008080] text-white px-4 sm:px-6 pt-20 sm:pt-24 pb-4 sm:pb-5">
         <div className="max-w-screen-xl mx-auto">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-3">
-              <div className="bg-white/10 p-2.5 rounded-xl">
-                <Image src="/icon/pembimbing.png" alt="" width={24} height={24} className="object-contain brightness-0 invert" />
+          <div className="flex items-center justify-between mb-4 sm:mb-5">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="bg-white/10 p-2 sm:p-2.5 rounded-xl">
+                <Image src="/icon/admin.png" alt="" width={20} height={20} className="object-contain brightness-0 invert sm:w-6 sm:h-6" />
               </div>
               <div>
-                <h1 className="font-extrabold text-lg">Admin Panel</h1>
-                <p className="text-white/60 text-xs">Kelola paket perjalanan, jadwal & testimoni</p>
+                <h1 className="font-extrabold text-base sm:text-lg">Admin Panel</h1>
+                <p className="text-white/60 text-[10px] sm:text-xs">Kelola paket perjalanan, jadwal & testimoni</p>
               </div>
             </div>
             <button onClick={() => openAdd(menu === "jadwal" ? "jadwal" : menu === "testimoni" ? "testimoni" : "paket")}
-              className="hidden sm:flex items-center gap-2 border border-white/30 hover:bg-white/10 px-4 py-2 rounded-xl text-sm font-semibold transition-colors">
-              ＋ Tambah {menu === "jadwal" ? "Jadwal" : menu === "testimoni" ? "Testimoni" : "Paket"}
+              className="flex items-center gap-1.5 border border-white/30 hover:bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-colors">
+              ＋ <span className="hidden sm:inline">Tambah </span>{menu === "jadwal" ? "Jadwal" : menu === "testimoni" ? "Testimoni" : "Paket"}
             </button>
           </div>
 
           {/* Tab menu */}
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-1.5 sm:gap-2 flex-wrap">
             {menuItems.map(m => (
               <button key={m.key} onClick={() => setMenu(m.key)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
                   menu === m.key ? "bg-white text-[#008080]" : "text-white/70 hover:bg-white/10"
                 }`}>
-                {m.icon} {m.label}
+                {m.icon} <span className="hidden xs:inline sm:inline">{m.label}</span>
+                <span className="sm:hidden">{m.key === "paket" ? "Paket" : m.key === "jadwal" ? "Jadwal" : "Testimoni"}</span>
               </button>
             ))}
           </div>
@@ -374,12 +375,12 @@ export default function AdminPage() {
       {/* Content */}
       <main className="max-w-screen-xl mx-auto w-full px-4 sm:px-6 py-6 flex-1">
 
-        {/*  PAKET  */}
+        {/*PAKET*/}
         {menu === "paket" && (
           <div>
             <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
               <h2 className="font-extrabold text-gray-800 flex items-center gap-2">
-                <Image src="/icon/mail.png" alt="" width={16} height={16} className="object-contain opacity-60" />
+                <Image src="/icon/Vector.png" alt="" width={16} height={16} className="object-contain opacity-60" />
                 Daftar Paket
                 <span className="bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full">{filteredPaket.length}</span>
               </h2>
@@ -407,7 +408,7 @@ export default function AdminPage() {
                 return (
                   <div key={p.id}>
                     {/* Baris paket */}
-                    <div className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-5 py-3 sm:py-4 hover:bg-gray-50 transition-colors">
                       <div className="w-12 h-12 bg-gray-100 rounded-xl overflow-hidden shrink-0 flex items-center justify-center">
                         {p.gambar
                           ? <img src={p.gambar} alt="" className="w-full h-full object-cover" />
@@ -424,7 +425,7 @@ export default function AdminPage() {
                         <p className="font-bold text-gray-900 text-sm truncate">{p.nama}</p>
                         <p className="text-gray-400 text-xs mt-0.5">Rp {p.harga} · {p.durasi} · {p.berangkat}</p>
                       </div>
-                      <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                         {/* Tombol riwayat */}
                         {riwayatPaket.length > 0 && (
                           <button
@@ -444,17 +445,17 @@ export default function AdminPage() {
                           });
                           fetchAll();
                         }}
-                          className={`text-xs font-semibold px-3 py-1.5 rounded-lg border outline-none cursor-pointer ${p.status==="Tersedia"?"bg-green-50 border-green-200 text-green-700":"bg-red-50 border-red-200 text-red-600"}`}>
+                          className={`text-xs font-semibold px-2 sm:px-3 py-1.5 rounded-lg border outline-none cursor-pointer ${p.status==="Tersedia"?"bg-green-50 border-green-200 text-green-700":"bg-red-50 border-red-200 text-red-600"}`}>
                           <option>Tersedia</option>
                           <option>Penuh</option>
                           <option>Tutup</option>
                         </select>
                         <button onClick={() => openEdit("paket", p)}
-                          className="p-2 text-gray-400 hover:text-[#008080] hover:bg-teal-50 rounded-lg transition-colors">
+                          className="p-1.5 sm:p-2 text-gray-400 hover:text-[#008080] hover:bg-teal-50 rounded-lg transition-colors">
                           <IconEdit />
                         </button>
                         <button onClick={() => setDeleteConfirm({table:"paket",id:p.id,nama:p.nama})}
-                          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                          className="p-1.5 sm:p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
                           <IconTrash />
                         </button>
                       </div>
@@ -504,28 +505,31 @@ export default function AdminPage() {
             {/* Preview links */}
             <div className="mt-6 bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
               <p className="text-xs font-semibold text-gray-500 mb-3 flex items-center gap-1.5">
-               <Image src="/icon/fasilitas.png" alt="" width={14} height={14} className="object-contain brightness-0 invert" />
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
                 Preview Halaman
               </p>
               <div className="flex gap-3 flex-wrap">
                 <Link href="/paket-umroh" target="_blank"
                   className="flex items-center gap-2 bg-[#008080] hover:bg-[#006666] text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors">
-                  <Image src="/icon/wa.png" alt="" width={14} height={14} className="object-contain brightness-0 invert" />
+                  <Image src="/icon/preview.png" alt="" width={14} height={14} className="object-contain brightness-0 invert" />
                   Umroh 
                 </Link>
                 <Link href="/paket-haji" target="_blank"
                   className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors">
-                  <Image src="/icon/izin.png" alt="" width={14} height={14} className="object-contain brightness-0 invert" />
-                  Haji 
+                  <Image src="/icon/preview.png" alt="" width={14} height={14} className="object-contain brightness-0 invert" />
+                  Haji
                 </Link>
                 <Link href="/paket-wisata" target="_blank"
                   className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors">
-                  <Image src="/icon/jejaring.png" alt="" width={14} height={14} className="object-contain brightness-0 invert" />
+                  <Image src="/icon/preview.png" alt="" width={14} height={14} className="object-contain brightness-0 invert" />
                   Wisata 
                 </Link>
                 <Link href="/cek-jadwal" target="_blank"
                   className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors">
-                  <Image src="/icon/calender1.png" alt="" width={14} height={14} className="object-contain brightness-0 invert" />
+                  <Image src="/icon/preview.png" alt="" width={14} height={14} className="object-contain brightness-0 invert" />
                   Jadwal 
                 </Link>
               </div>
@@ -533,12 +537,12 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/*  JADWAL  */}
+        {/* JADWAL */}
         {menu === "jadwal" && (
           <div>
             <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
               <h2 className="font-extrabold text-gray-800 flex items-center gap-2">
-                <Image src="/icon/calender.png" alt="" width={16} height={16} className="object-contain opacity-60" />
+                <Image src="/icon/calender1.png" alt="" width={16} height={16} className="object-contain opacity-60" />
                 {showRiwayat ? "Riwayat Keberangkatan" : "Jadwal Keberangkatan"}
                 <span className="bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full">
                   {showRiwayat
@@ -568,29 +572,29 @@ export default function AdminPage() {
                 {jadwalList.filter(j => !j.is_riwayat && j.status === "Aktif").length === 0 ? (
                   <div className="py-16 text-center text-gray-400 text-sm">Belum ada jadwal aktif</div>
                 ) : jadwalList.filter(j => !j.is_riwayat && j.status === "Aktif").map(j => (
-                  <div key={j.id} className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
-                    <div className="w-12 h-12 bg-teal-50 rounded-xl flex items-center justify-center shrink-0">
-                      <Image src="/icon/calender.png" alt="" width={24} height={24} className="object-contain opacity-70" />
+                  <div key={j.id} className="flex items-center gap-3 sm:gap-4 px-3 sm:px-5 py-3 sm:py-4 hover:bg-gray-50 transition-colors">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-teal-50 rounded-xl flex items-center justify-center shrink-0">
+                      <Image src="/icon/calender.png" alt="" width={22} height={22} className="object-contain opacity-70" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <div className="flex items-center gap-1.5 sm:gap-2 mb-1 flex-wrap">
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${j.jenis==="Umroh"?"bg-teal-100 text-teal-700":j.jenis==="Haji"?"bg-amber-100 text-amber-700":"bg-blue-100 text-blue-700"}`}>
                           {j.jenis?.toUpperCase()}
                         </span>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700">Aktif</span>
                       </div>
-                      <p className="font-bold text-gray-900 text-sm">{j.nama_paket}</p>
-                      <p className="text-gray-400 text-xs mt-0.5">{j.tanggal_berangkat} → {j.tanggal_pulang} · Kuota: {j.terisi}/{j.kuota}</p>
+                      <p className="font-bold text-gray-900 text-sm truncate">{j.nama_paket}</p>
+                      <p className="text-gray-400 text-[10px] sm:text-xs mt-0.5 truncate">{j.tanggal_berangkat} → {j.tanggal_pulang} · {j.terisi}/{j.kuota} jamaah</p>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      {/* Tandai selesai */}
+                    <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                       <button
                         onClick={() => { setSelesaiModal({id:j.id, nama_paket:j.nama_paket}); setSelesaiForm({catatan:"", tanggal_selesai:""}); }}
-                        className="hidden sm:flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 bg-amber-50 border border-amber-200 text-amber-700 hover:bg-amber-100 rounded-lg transition-colors">
-                        ✓ Tandai Selesai
+                        className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs font-semibold px-2 sm:px-3 py-1.5 bg-amber-50 border border-amber-200 text-amber-700 hover:bg-amber-100 rounded-lg transition-colors">
+                        <Image src="/icon/ceklis.png" alt="" width={11} height={11} className="object-contain opacity-70" />
+                        <span className="hidden sm:inline">Tandai </span>Selesai
                       </button>
-                      <button onClick={() => openEdit("jadwal", j)} className="p-2 text-gray-400 hover:text-[#008080] hover:bg-teal-50 rounded-lg transition-colors"><IconEdit /></button>
-                      <button onClick={() => setDeleteConfirm({table:"jadwal",id:j.id,nama:j.nama_paket})} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><IconTrash /></button>
+                      <button onClick={() => openEdit("jadwal", j)} className="p-1.5 sm:p-2 text-gray-400 hover:text-[#008080] hover:bg-teal-50 rounded-lg transition-colors"><IconEdit /></button>
+                      <button onClick={() => setDeleteConfirm({table:"jadwal",id:j.id,nama:j.nama_paket})} className="p-1.5 sm:p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><IconTrash /></button>
                     </div>
                   </div>
                 ))}
@@ -603,12 +607,12 @@ export default function AdminPage() {
                 {jadwalList.filter(j => j.is_riwayat || j.status === "Selesai" || j.status === "Dibatalkan").length === 0 ? (
                   <div className="py-16 text-center text-gray-400 text-sm">Belum ada riwayat keberangkatan</div>
                 ) : jadwalList.filter(j => j.is_riwayat || j.status === "Selesai" || j.status === "Dibatalkan").map(j => (
-                  <div key={j.id} className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors opacity-80">
-                    <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shrink-0">
-                      <Image src="/icon/calender.png" alt="" width={24} height={24} className="object-contain opacity-40" />
+                  <div key={j.id} className="flex items-center gap-3 sm:gap-4 px-3 sm:px-5 py-3 sm:py-4 hover:bg-gray-50 transition-colors opacity-80">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded-xl flex items-center justify-center shrink-0">
+                      <Image src="/icon/calender.png" alt="" width={22} height={22} className="object-contain opacity-40" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <div className="flex items-center gap-1.5 sm:gap-2 mb-1 flex-wrap">
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${j.jenis==="Umroh"?"bg-teal-100 text-teal-700":j.jenis==="Haji"?"bg-amber-100 text-amber-700":"bg-blue-100 text-blue-700"}`}>
                           {j.jenis?.toUpperCase()}
                         </span>
@@ -616,19 +620,19 @@ export default function AdminPage() {
                           {j.status}
                         </span>
                       </div>
-                      <p className="font-bold text-gray-900 text-sm">{j.nama_paket}</p>
-                      <p className="text-gray-400 text-xs mt-0.5">
-                        {j.tanggal_berangkat} → {j.tanggal_pulang} · Kuota: {j.terisi}/{j.kuota}
-                        {j.tanggal_selesai && <span className="ml-2 text-gray-500">· Selesai: {j.tanggal_selesai}</span>}
+                      <p className="font-bold text-gray-900 text-sm truncate">{j.nama_paket}</p>
+                      <p className="text-gray-400 text-[10px] sm:text-xs mt-0.5 truncate">
+                        {j.tanggal_berangkat} · {j.terisi}/{j.kuota} jamaah
+                        {j.tanggal_selesai && <span className="ml-1">· Selesai: {j.tanggal_selesai}</span>}
                       </p>
-                      {j.catatan && <p className="text-gray-400 text-xs mt-0.5 italic">"{j.catatan}"</p>}
+                      {j.catatan && <p className="text-gray-400 text-[10px] mt-0.5 italic truncate">"{j.catatan}"</p>}
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                       <button onClick={() => handleAktifkan(j.id)}
-                        className="hidden sm:flex text-xs font-semibold px-3 py-1.5 bg-teal-50 border border-teal-200 text-teal-700 hover:bg-teal-100 rounded-lg transition-colors">
+                        className="text-[10px] sm:text-xs font-semibold px-2 sm:px-3 py-1.5 bg-teal-50 border border-teal-200 text-teal-700 hover:bg-teal-100 rounded-lg transition-colors">
                         Aktifkan
                       </button>
-                      <button onClick={() => setDeleteConfirm({table:"jadwal",id:j.id,nama:j.nama_paket})} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><IconTrash /></button>
+                      <button onClick={() => setDeleteConfirm({table:"jadwal",id:j.id,nama:j.nama_paket})} className="p-1.5 sm:p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><IconTrash /></button>
                     </div>
                   </div>
                 ))}
@@ -639,12 +643,13 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/*  TESTIMONI  */}
+        {/* TESTIMONI */}
         {menu === "testimoni" && (
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-extrabold text-gray-800 flex items-center gap-2">
-                ⭐ Testimoni
+                <Image src="/icon/kepuasan.png" alt="" width={16} height={16} className="object-contain opacity-60" />
+                Testimoni
                 <span className="bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full">{testimoniList.length}</span>
               </h2>
               <button onClick={() => openAdd("testimoni")} className="hidden sm:flex items-center gap-2 bg-[#008080] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#006666] transition-colors">
@@ -656,27 +661,27 @@ export default function AdminPage() {
               {testimoniList.length === 0 ? (
                 <div className="py-16 text-center text-gray-400 text-sm">Belum ada testimoni</div>
               ) : testimoniList.map(t => (
-                <div key={t.id} className={`flex items-start gap-4 px-5 py-4 hover:bg-gray-50 transition-colors ${!t.tampil?"opacity-50":""}`}>
-                  <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center shrink-0 text-sm font-bold text-teal-700">
+                <div key={t.id} className={`flex items-start gap-3 sm:gap-4 px-3 sm:px-5 py-3 sm:py-4 hover:bg-gray-50 transition-colors ${!t.tampil?"opacity-50":""}`}>
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 bg-teal-100 rounded-full flex items-center justify-center shrink-0 text-sm font-bold text-teal-700">
                     {t.nama?.charAt(0)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                      <p className="font-bold text-gray-900 text-sm">{t.nama}</p>
-                      <span className="text-gray-400 text-xs">· {t.lokasi}</span>
+                      <p className="font-bold text-gray-900 text-sm truncate">{t.nama}</p>
+                      <span className="text-gray-400 text-xs shrink-0">· {t.lokasi}</span>
                     </div>
                     <div className="flex mb-1">
                       {[...Array(5)].map((_,i) => <span key={i} className={i < t.rating ? "text-amber-400 text-xs" : "text-gray-200 text-xs"}>★</span>)}
                     </div>
                     <p className="text-gray-600 text-xs leading-relaxed line-clamp-2">{t.pesan}</p>
                   </div>
-                  <div className="flex items-center gap-1 shrink-0">
+                  <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1 shrink-0">
                     <button onClick={() => toggleTampil(t)}
-                      className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors ${t.tampil?"bg-green-50 border-green-200 text-green-700":"bg-gray-100 border-gray-200 text-gray-500"}`}>
-                      {t.tampil ? "Tampil" : "Disembunyikan"}
+                      className={`text-[10px] sm:text-xs font-semibold px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border transition-colors ${t.tampil?"bg-green-50 border-green-200 text-green-700":"bg-gray-100 border-gray-200 text-gray-500"}`}>
+                      {t.tampil ? "Tampil" : "Sembunyikan"}
                     </button>
-                    <button onClick={() => openEdit("testimoni", t)} className="p-2 text-gray-400 hover:text-[#008080] hover:bg-teal-50 rounded-lg transition-colors"><IconEdit /></button>
-                    <button onClick={() => setDeleteConfirm({table:"testimoni",id:t.id,nama:t.nama})} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><IconTrash /></button>
+                    <button onClick={() => openEdit("testimoni", t)} className="p-1.5 sm:p-2 text-gray-400 hover:text-[#008080] hover:bg-teal-50 rounded-lg transition-colors"><IconEdit /></button>
+                    <button onClick={() => setDeleteConfirm({table:"testimoni",id:t.id,nama:t.nama})} className="p-1.5 sm:p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><IconTrash /></button>
                   </div>
                 </div>
               ))}
@@ -686,10 +691,10 @@ export default function AdminPage() {
         )}
       </main>
 
-      {/*  MODAL  */}
+      {/* MODAL */}
       {modal && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={closeModal}>
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e=>e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm" onClick={closeModal}>
+          <div className="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-lg max-h-[92vh] sm:max-h-[90vh] overflow-y-auto" onClick={e=>e.stopPropagation()}>
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <h3 className="font-extrabold text-gray-900">
                 {modal.mode==="add" ? "Tambah" : "Edit"} {modal.type==="paket"?"Paket":modal.type==="jadwal"?"Jadwal":"Testimoni"}
@@ -753,7 +758,9 @@ export default function AdminPage() {
                       </div>
                     ) : (
                       <div className="py-10 flex flex-col items-center gap-2">
-                        <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center text-2xl">🖼️</div>
+                        <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+                          <Image src="/icon/upload.png" alt="" width={24} height={24} className="object-contain opacity-30" />
+                        </div>
                         <p className="text-sm font-semibold text-gray-600">Klik untuk upload poster</p>
                         <p className="text-xs text-gray-400">PNG, JPG, WEBP · Ukuran ideal 1080×1350px</p>
                       </div>
@@ -775,7 +782,29 @@ export default function AdminPage() {
               </>}
 
               {modal.type === "jadwal" && <>
-                <Field label="Nama Paket" value={form.nama_paket} onChange={v=>setForm({...form,nama_paket:v})} />
+                {/* Pilih dari daftar paket yang sudah ada */}
+                <div>
+                  <label className="text-xs font-semibold text-gray-600 block mb-1.5">Pilih Paket</label>
+                  <select
+                    value={form.nama_paket || ""}
+                    onChange={e => {
+                      const selected = paketList.find(p => p.nama === e.target.value);
+                      setForm({
+                        ...form,
+                        nama_paket: e.target.value,
+                        jenis: selected?.jenis || form.jenis,
+                        maskapai: selected?.maskapai || form.maskapai,
+                        hotel: selected?.hotel || form.hotel,
+                      });
+                    }}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#008080] transition-colors bg-white"
+                  >
+                    <option value="">-- Pilih Paket --</option>
+                    {paketList.map(p => (
+                      <option key={p.id} value={p.nama}>{p.nama} ({p.jenis})</option>
+                    ))}
+                  </select>
+                </div>
                 <SelectField label="Jenis" value={form.jenis} onChange={v=>setForm({...form,jenis:v})} options={["Umroh","Haji","Wisata Islam"]} />
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="Tanggal Berangkat" value={form.tanggal_berangkat} onChange={v=>setForm({...form,tanggal_berangkat:v})} placeholder="07 Mar 2026" />
@@ -833,7 +862,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* CONFIRM DELETE  */}
+      {/* CONFIRM DELETE */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 text-center">
@@ -850,11 +879,13 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/*MODAL TANDAI SELESAI  */}
+      {/* MODAL TANDAI SELESAI */}
       {selesaiModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6">
-            <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">✓</div>
+            <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Image src="/icon/ceklis.png" alt="" width={20} height={20} className="object-contain" style={{filter:"sepia(1) saturate(3) hue-rotate(5deg)"}} />
+            </div>
             <h3 className="font-extrabold text-gray-900 text-center mb-1">Tandai Selesai</h3>
             <p className="text-gray-400 text-sm text-center mb-5">
               Perjalanan <strong className="text-gray-700">{selesaiModal.nama_paket}</strong> akan dipindahkan ke riwayat.
