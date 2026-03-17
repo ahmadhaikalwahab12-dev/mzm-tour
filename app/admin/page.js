@@ -18,7 +18,7 @@ const emptyPaket = { nama:"", jenis:"Umroh", kategori:"Reguler", durasi:"", mask
 const emptyJadwal = { nama_paket:"", jenis:"Umroh", tanggal_berangkat:"", tanggal_pulang:"", maskapai:"", hotel:"", kuota:"", terisi:"0", status:"Aktif", catatan:"", is_riwayat:false, tanggal_selesai:"" };
 const emptyTestimoni = { nama:"", lokasi:"", rating:5, pesan:"", tampil:true };
 
-//  Navbar Layanan
+// ── Navbar Layanan (sama seperti halaman layanan) ─────────
 function NavbarAdmin({ onLogout }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -318,7 +318,7 @@ export default function AdminPage() {
     </div>
   );
 
-  //  DASHBOARD 
+  // ── DASHBOARD 
   const menuItems = [
     { key:"paket",     icon: <Image src="/icon/Vector.png" alt="" width={16} height={16} className="object-contain brightness-0 invert" />, label:"Paket Perjalanan" },
     { key:"jadwal",    icon: <Image src="/icon/calender1.png" alt="" width={16} height={16} className="object-contain brightness-0 invert" />,  label:"Jadwal Keberangkatan" },
@@ -375,7 +375,7 @@ export default function AdminPage() {
       {/* Content */}
       <main className="max-w-screen-xl mx-auto w-full px-4 sm:px-6 py-6 flex-1">
 
-        {/*PAKET*/}
+        {/* PAKET */}
         {menu === "paket" && (
           <div>
             <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
@@ -409,10 +409,14 @@ export default function AdminPage() {
                   <div key={p.id}>
                     {/* Baris paket */}
                     <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-5 py-3 sm:py-4 hover:bg-gray-50 transition-colors">
-                      <div className="w-12 h-12 bg-gray-100 rounded-xl overflow-hidden shrink-0 flex items-center justify-center">
+                      <div className="w-12 h-12 bg-gray-100 rounded-xl overflow-hidden shrink-0">
                         {p.gambar
                           ? <img src={p.gambar} alt="" className="w-full h-full object-cover" />
-                          : <Image src="/icon/mail.png" alt="" width={24} height={24} className="object-contain opacity-30" />
+                          : p.jenis === "Haji"
+                            ? <img src="/images/paketHaji2.png" alt="" className="w-full h-full object-cover" />
+                            : p.jenis === "Wisata Islam"
+                              ? <img src="/images/layananwisata.png" alt="" className="w-full h-full object-cover" />
+                              : <img src="/images/Umroh-card5.png" alt="" className="w-full h-full object-cover" />
                         }
                       </div>
                       <div className="flex-1 min-w-0">
@@ -520,7 +524,7 @@ export default function AdminPage() {
                 <Link href="/paket-haji" target="_blank"
                   className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors">
                   <Image src="/icon/preview.png" alt="" width={14} height={14} className="object-contain brightness-0 invert" />
-                  Haji
+                  Haji 
                 </Link>
                 <Link href="/paket-wisata" target="_blank"
                   className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors">
@@ -537,12 +541,12 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* JADWAL */}
+        {/*JADWAL */}
         {menu === "jadwal" && (
           <div>
             <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
               <h2 className="font-extrabold text-gray-800 flex items-center gap-2">
-                <Image src="/icon/calender1.png" alt="" width={16} height={16} className="object-contain opacity-60" />
+                <Image src="/icon/calendar2.png" alt="" width={16} height={16} className="object-contain opacity-60" />
                 {showRiwayat ? "Riwayat Keberangkatan" : "Jadwal Keberangkatan"}
                 <span className="bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full">
                   {showRiwayat
@@ -609,7 +613,7 @@ export default function AdminPage() {
                 ) : jadwalList.filter(j => j.is_riwayat || j.status === "Selesai" || j.status === "Dibatalkan").map(j => (
                   <div key={j.id} className="flex items-center gap-3 sm:gap-4 px-3 sm:px-5 py-3 sm:py-4 hover:bg-gray-50 transition-colors opacity-80">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded-xl flex items-center justify-center shrink-0">
-                      <Image src="/icon/calender.png" alt="" width={22} height={22} className="object-contain opacity-40" />
+                      <Image src="/icon/calendar2.png" alt="" width={22} height={22} className="object-contain opacity-40" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 sm:gap-2 mb-1 flex-wrap">
@@ -648,7 +652,7 @@ export default function AdminPage() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-extrabold text-gray-800 flex items-center gap-2">
-                <Image src="/icon/kepuasan.png" alt="" width={16} height={16} className="object-contain opacity-60" />
+                <Image src="/icon/testimoni1.png" alt="" width={16} height={16} className="object-contain opacity-60" />
                 Testimoni
                 <span className="bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full">{testimoniList.length}</span>
               </h2>
@@ -862,7 +866,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* CONFIRM DELETE */}
+      {/* CONFIRM DELETE*/}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 text-center">

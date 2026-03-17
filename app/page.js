@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 const statsData = [
-  { value: "10k+", label: "Jamaah Puas" },
-  { value: "15+",  label: "Tahun Pengalaman" },
+  { value: "5k+", label: "Jamaah Puas" },
+  { value: "3+",  label: "Tahun Pengalaman" },
   { value: "99%",  label: "Tingkat Keberhasilan" },
   { value: "B+",   label: "Akreditasi PPIU" },
 ];
