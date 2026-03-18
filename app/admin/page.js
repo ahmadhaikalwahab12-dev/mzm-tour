@@ -18,7 +18,7 @@ const emptyPaket = { nama:"", jenis:"Umroh", kategori:"Reguler", durasi:"", mask
 const emptyJadwal = { nama_paket:"", jenis:"Umroh", tanggal_berangkat:"", tanggal_pulang:"", maskapai:"", hotel:"", kuota:"", terisi:"0", status:"Aktif", catatan:"", is_riwayat:false, tanggal_selesai:"" };
 const emptyTestimoni = { nama:"", lokasi:"", rating:5, pesan:"", tampil:true };
 
-// ── Navbar Layanan (sama seperti halaman layanan) ─────────
+// Navbar Layanan
 function NavbarAdmin({ onLogout }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -253,21 +253,19 @@ export default function AdminPage() {
   // Upload gambar ke Supabase Storage (bucket: paket-gambar)
   const handleUploadGambar = async (file) => {
     if (!file) return;
-    // Validasi ukuran maks 5MB
     if (file.size > 5 * 1024 * 1024) {
       alert("Ukuran file maksimal 5MB."); return;
     }
-    // Validasi tipe
     if (!file.type.startsWith("image/")) {
       alert("File harus berupa gambar."); return;
     }
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
-      const fileName = `paket_${Date.now()}.${ext}`;
+      const ext = file.name.split(".").pop().toLowerCase();
+      const fileName = `paket_${Date.now()}_${Math.random().toString(36).slice(2,7)}.${ext}`;
       const { data, error } = await supabase.storage
         .from("paket-gambar")
-        .upload(fileName, file, { upsert: true });
+        .upload(fileName, file, { upsert: true, contentType: file.type });
       if (error) { alert("Upload gagal: " + error.message); return; }
       const { data: urlData } = supabase.storage
         .from("paket-gambar")
@@ -318,7 +316,7 @@ export default function AdminPage() {
     </div>
   );
 
-  // ── DASHBOARD 
+  // DASHBOARD 
   const menuItems = [
     { key:"paket",     icon: <Image src="/icon/Vector.png" alt="" width={16} height={16} className="object-contain brightness-0 invert" />, label:"Paket Perjalanan" },
     { key:"jadwal",    icon: <Image src="/icon/calender1.png" alt="" width={16} height={16} className="object-contain brightness-0 invert" />,  label:"Jadwal Keberangkatan" },
@@ -541,12 +539,12 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/*JADWAL */}
+        {/* JADWAL */}
         {menu === "jadwal" && (
           <div>
             <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
               <h2 className="font-extrabold text-gray-800 flex items-center gap-2">
-                <Image src="/icon/calendar2.png" alt="" width={16} height={16} className="object-contain opacity-60" />
+                <Image src="/icon/calender1.png" alt="" width={16} height={16} className="object-contain opacity-60" />
                 {showRiwayat ? "Riwayat Keberangkatan" : "Jadwal Keberangkatan"}
                 <span className="bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full">
                   {showRiwayat
@@ -695,7 +693,7 @@ export default function AdminPage() {
         )}
       </main>
 
-      {/* MODAL */}
+      {/* MODAL*/}
       {modal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm" onClick={closeModal}>
           <div className="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-lg max-h-[92vh] sm:max-h-[90vh] overflow-y-auto" onClick={e=>e.stopPropagation()}>
@@ -866,7 +864,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* CONFIRM DELETE*/}
+      {/* CONFIRM DELETE */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 text-center">
